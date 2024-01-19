@@ -36,9 +36,18 @@ function emitEvent(event: Events) {
   </tr>
 </template>
 
-<style>
+<style scoped>
 .table-text {
   display: flex;
   justify-content: left;
+}
+tr {
+  margin-bottom: 10px;
+  background-color: #333;
+}
+
+td {
+  margin-left: 0px;
+  margin-right: 0px;
 }
 </style>

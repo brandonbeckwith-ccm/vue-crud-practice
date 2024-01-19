@@ -20,6 +20,7 @@ type ResponseData = {
 let oldGet: ResponseData[]; // Keep a backup to restore from
 
 const sortCheckbox = ref(true);
+const completedCheckbox = ref(false);
 const todoData = ref<ResponseData[]>([]);
 const filterInput = ref("");
 
@@ -31,17 +32,29 @@ type Response = {
 };
 
 const todoFiltered = computed(() => {
-  const filtered = [...todoData.value].filter((value) => {
+  return [...todoData.value].filter((value) => {
     // Copy or we end up blowing the stack
     return value.todoName
       .toLowerCase()
       .includes(filterInput.value.toLowerCase());
   });
-  return filtered;
+});
+
+const filterCompleted = computed(() => {
+  return todoFiltered.value.reduce((filtered: ResponseData[], current) => {
+    // Copy or we end up blowing the stack
+    if (current.isComplete) {
+      filtered.push(current);
+    }
+    return filtered;
+  }, []);
 });
 
 const todoSorted = computed(() => {
-  const sorted = todoFiltered.value.sort(
+  const toSort = !completedCheckbox.value
+    ? todoFiltered.value
+    : filterCompleted.value;
+  const sorted = toSort.sort(
     // Don't need copy here
     (a: ResponseData, b: ResponseData) => {
       if (a.todoName > b.todoName) {
@@ -129,35 +142,38 @@ onMounted(async () => {
 
 <template>
   <div class="flex-container">
-    <div class="flex-filter">
-      <input @keypress.enter="addRequest" type="text" v-model="textInput" />
+    <div class="flex-add">
+      <input
+        @keypress.enter="addRequest"
+        placeholder="Todo..."
+        type="text"
+        v-model="textInput"
+      />
       <button @click="addRequest" class="add-button">Add</button>
     </div>
 
     <table>
       <tr>
-        <td class="">
-          <input type="text" v-model="filterInput" />
-          <input type="checkbox" v-model="sortCheckbox" />
+        <td class="flex-sort">
+          <input type="text" placeholder="filter" v-model="filterInput" />
+          <div>
+            <h5>Sort Descending</h5>
+            <input type="checkbox" v-model="sortCheckbox" />
+          </div>
         </td>
         <td>
-
+          <h5>completed</h5>
+          <input type="checkbox" v-model="completedCheckbox" />
         </td>
         <td>
-          <button @click="debouncedGetRequest">Re-fetch</button>
+          <button @click="debouncedGetRequest">Refresh</button>
         </td>
       </tr>
-      
+
       <tr>
-        <th class>
-          <h3>Task</h3>
-        </th>
-        <th>
-          <h3>Completed</h3>
-        </th>
-        <th>
-          <h3>Delete?</h3>
-        </th>
+        <th>Task</th>
+        <th>Completed</th>
+        <th>Delete?</th>
       </tr>
 
       <TableItem
@@ -174,15 +190,21 @@ onMounted(async () => {
 </template>
 
 <style>
-
-.flex-filter {
+.flex-add {
   display: flex;
   justify-content: flex-start;
+  align-items: center;
 }
 .flex-container {
   display: flex;
   align-items: center;
   flex-flow: column;
+}
+
+.flex-sort {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
 }
 
 table {
@@ -201,5 +223,10 @@ table {
 .flex-child {
   flex: 1;
   margin: 10px;
+}
+
+input[type="text"] {
+  height: 1em;
+  margin: 5px;
 }
 </style>
