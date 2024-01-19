@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref } from "vue"
 import { Events, TaskInfo } from "../shared";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 
 const emit = defineEmits<{
@@ -31,6 +34,12 @@ function emitEvent(event: Events) {
       <input @change="emitEvent('updateEvent')" type="checkbox" v-model="checkBoxInput" />
     </td>
     <td>
+      <button @click="router.push({
+        name: 'edit',
+        query: {
+          id: props._id
+        }
+      })">Edit</button>
       <button @click="emitEvent('deleteEvent')">Delete</button>
     </td>
   </tr>
