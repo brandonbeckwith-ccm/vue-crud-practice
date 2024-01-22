@@ -1,17 +1,16 @@
-import { required, Validation } from "@vuelidate/validators"
-import { Ref, ref } from "vue"
+import { helpers } from "@vuelidate/validators";
 
-function todoValidator(val: string) {
-  const lowered = val.toLowerCase()
-  if (!lowered.includes("vue")) {
-    return false
-  } else if (lowered.match(/\W/)) {
-    return false
-  } else {
-    return true
+export const noSymbols = helpers.withMessage(
+  "Can't contain symbols.",
+  (val: string) => {
+    console.log(val);
+    const res = /^[^\^~`!@#\$%^*_+\[\]{}\\:;?|><=]+$/.test(val);
+    console.log(res);
+    return res;
   }
-}
+);
 
-export const textBoxValidationRules = {
-  textbox: {required, todoValidator}
-}
+export const containsVue = helpers.withMessage(
+  "Doesn't contain 'vue'.",
+  (val: string) => !!val.toLowerCase().includes("vue")
+);
