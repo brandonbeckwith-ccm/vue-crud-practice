@@ -3,7 +3,7 @@
 
 [![pages-build-deployment](https://github.com/brandonbeckwith-ccm/vue-crud-practice/actions/workflows/pages/pages-build-deployment/badge.svg?branch=gh-pages)](https://github.com/brandonbeckwith-ccm/vue-crud-practice/actions/workflows/pages/pages-build-deployment)
 
-You can use the above badge to visit the site in gh-pages.
+You can visit a deployed [GitHub Pages](https://brandonbeckwith-ccm.github.io/vue-crud-practice/) version.
 
 ## Details
 
