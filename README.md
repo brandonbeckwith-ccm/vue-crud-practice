@@ -1,16 +1,16 @@
 
 # Todo Application
 
-## WUSIWYG
+[![pages-build-deployment](https://github.com/brandonbeckwith-ccm/vue-crud-practice/actions/workflows/pages/pages-build-deployment/badge.svg?branch=gh-pages)](https://github.com/brandonbeckwith-ccm/vue-crud-practice/actions/workflows/pages/pages-build-deployment)
 
-All components should be labeled accordingly, but here is a quick summary
-- The bar and button at the top are used to add todos
-- The elements below, from left to right, 
-   - A filter input that dynamically updates the list
-   - A sort descending toggle
-   - A completion status filter that shows *only* completed tasks
-   - A refresh button that makes a pull request and updates the tasks
+You can use the above badge to visit the site in gh-pages.
 
-Each task can be marked as completed and deleted (no delete confirmation, live dangerously)
+## Details
 
-Any api requests are logged in the console and failed requests are displayed to the user. In the event of a failed get request it will reload using old data
+- The todo list is *scrollable* preventing the need to scroll away from the controls.
+- Clicking the '+' button without a todo will take you to a dedicated page.
+- Text boxes turn blue when they have valid input. 
+   - Trying to submit invalid input will result in a small error popup.
+- The *blue* button next to a todo will take you to an 'edit' page.
+- Delete simply deletes. You click it and the todo goes 'poof'
+- Sorting can be done with the dropdown.
