@@ -37,7 +37,7 @@ type SortOptions = (typeof sortingOptions)[number]["value"];
 
 // Copy or we end up blowing the stack
 const todoFiltered = computed(() =>
-  [...todoData.value].filter((value) =>
+  todoData.value.filter((value) =>
     value.todoName.toLowerCase().includes(filterInput.value.toLowerCase())
   )
 );
