@@ -3,7 +3,7 @@ import { useRoute } from "vue-router";
 import { TaskInfo } from "../util/shared";
 import { computed, onMounted, ref } from "vue";
 import { router } from "../routes";
-import { deletePost, getPost, postPost } from "../util/HttpRequests";
+import { deletePost, getPost, postPost } from "../util/httpRequests";
 import FlexText from "../components/FlexText.vue";
 import useVuelidate from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
@@ -118,3 +118,4 @@ onMounted(() => {
 }
 
 </style>
+../util/httpRequests

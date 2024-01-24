@@ -1,5 +1,5 @@
 import axios from "axios";
-import { BASE_URL, ResponseData, TaskInfo } from "../util/shared";
+import { BASE_URL, ResponseData, TaskInfo } from "./shared";
 
 
 export type ResponsePosts = {

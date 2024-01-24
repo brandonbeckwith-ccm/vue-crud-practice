@@ -7,7 +7,7 @@ import {
   getPosts,
   postPost,
   updatePost,
-} from "../util/HttpRequests";
+} from "../util/httpRequests";
 import FlexCard from "../components/FlexCard.vue";
 import FlexList from "../components/FlexList.vue";
 import FlexText from "../components/FlexText.vue";
@@ -319,3 +319,4 @@ table {
   margin: 10px;
 }
 </style>
+../util/httpRequests
