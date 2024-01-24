@@ -1,14 +1,10 @@
 <script setup lang="ts">
 
-defineOptions({
-  inheritAttrs: false
-})
 
 </script>
 
 <template>
   <button
-    v-bind="$attrs"
     @click="$emit($event.type, $event)"
     class="base-button"
   >

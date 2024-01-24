@@ -11,49 +11,44 @@ import {
 import FlexCard from "../components/FlexCard.vue";
 import FlexList from "../components/FlexList.vue";
 import FlexText from "../components/FlexText.vue";
-import AddTodo from "../components/AddTodo.vue"
+import AddTodo from "../components/AddTodo.vue";
 import { useRouter } from "vue-router";
 import IconButton from "../components/IconButton.vue";
 
 const DEBOUNCE_TIME = 250;
 
 let oldGet: ResponseData[]; // Keep a backup to restore from
-const router = useRouter()
+const router = useRouter();
 
-const sortingOrder = ref<SORT_OPTIONS>("task_dsc");
+const sortingOrder = ref<SortOptions>("task_dsc");
 
 const todoData = ref<ResponseData[]>([]);
 
 const filterInput = ref("");
 const addText = ref("");
 
-type SORT_OPTIONS = "task_asc" | "task_dsc" | "complete" | "incomplete";
-
-const sortingOptions: { text: string; value: SORT_OPTIONS }[] = [
+const sortingOptions = [
   { text: "Tasks (dsc)", value: "task_dsc" },
   { text: "Tasks (asc)", value: "task_asc" },
   { text: "Complete", value: "complete" },
   { text: "Incomplete", value: "incomplete" },
-];
+] as const;
+type SortOptions = (typeof sortingOptions)[number]["value"];
 
-const todoFiltered = computed(() => {
-  return [...todoData.value].filter((value) => {
-    // Copy or we end up blowing the stack
-    return value.todoName
-      .toLowerCase()
-      .includes(filterInput.value.toLowerCase());
-  });
-});
-
+// Copy or we end up blowing the stack
+const todoFiltered = computed(() =>
+  [...todoData.value].filter((value) =>
+    value.todoName.toLowerCase().includes(filterInput.value.toLowerCase())
+  )
+);
 
 const todoSorted = computed(() => {
-
   const taskSort = (a: ResponseData, b: ResponseData) => {
     return a.todoName.localeCompare(b.todoName); // Thanks Ethan!
   };
 
   const completeSort = (a: ResponseData, b: ResponseData) => {
-    return ~~b.isComplete - ~~a.isComplete;
+    return +b.isComplete - +a.isComplete;
   };
 
   // Required so vue updates.
@@ -76,8 +71,8 @@ const todoSorted = computed(() => {
 async function addRequest(invalid: boolean) {
   if (addText.value === "") {
     router.push({
-      name: "add"
-    })
+      name: "add",
+    });
   }
 
   if (invalid) {
@@ -90,12 +85,11 @@ async function addRequest(invalid: boolean) {
       todoName: addText.value,
       isComplete: false,
     });
-    await debouncedUpdatePosts()
+    await debouncedUpdatePosts();
     addText.value = "";
   } catch (error) {
     console.dir(error);
   }
-
 }
 
 async function deleteUpdate(event: TaskInfo) {
@@ -118,6 +112,7 @@ async function updatePosts() {
 }
 
 const debouncedUpdatePosts = debounce(updatePosts, DEBOUNCE_TIME);
+const debouncedAddRequest = debounce(addRequest, DEBOUNCE_TIME)
 
 async function updateCheckmark(event: TaskInfo) {
   await updatePost(event);
@@ -130,56 +125,53 @@ onMounted(() => {
 </script>
 
 <template>
-<FlexList class="container-card">
+  <FlexList class="container-card">
+    <AddTodo v-model="addText" @submit="debouncedAddRequest"></AddTodo>
 
-  <AddTodo v-model="addText" @submit="addRequest"></AddTodo>
+    <FlexCard class="control-card">
+      <FlexText
+        placeholder="Search"
+        class="less-aggressive-textbox"
+        v-model="filterInput"
+      />
 
-  <FlexCard class="control-card">
-    <FlexText
-      placeholder="Search"
-      class="less-aggressive-textbox"
-      v-model="filterInput"
-    />
+      <select name="sorting-orders" v-model="sortingOrder">
+        <option v-for="item of sortingOptions" :value="item.value">
+          {{ item.text }}
+        </option>
+      </select>
 
-    <select name="sorting-orders" v-model="sortingOrder">
-      <option v-for="item of sortingOptions" :value="item.value">
-        {{ item.text }}
-      </option>
-    </select>
+      <IconButton class="refresh-button" @click="debouncedUpdatePosts">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          x="0px"
+          y="0px"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          style="fill: #ffffff"
+        >
+          <path
+            d="M 7.1601562 3 L 8.7617188 5 L 18 5 C 18.551 5 19 5.448 19 6 L 19 15 L 16 15 L 20 20 L 24 15 L 21 15 L 21 6 C 21 4.346 19.654 3 18 3 L 7.1601562 3 z M 4 4 L 0 9 L 3 9 L 3 18 C 3 19.654 4.346 21 6 21 L 16.839844 21 L 15.238281 19 L 6 19 C 5.449 19 5 18.552 5 18 L 5 9 L 8 9 L 4 4 z"
+          ></path>
+        </svg>
+      </IconButton>
+    </FlexCard>
 
-    <IconButton class="refresh-button" @click="debouncedUpdatePosts">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        x="0px"
-        y="0px"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        style="fill: #ffffff"
-      >
-        <path
-          d="M 7.1601562 3 L 8.7617188 5 L 18 5 C 18.551 5 19 5.448 19 6 L 19 15 L 16 15 L 20 20 L 24 15 L 21 15 L 21 6 C 21 4.346 19.654 3 18 3 L 7.1601562 3 z M 4 4 L 0 9 L 3 9 L 3 18 C 3 19.654 4.346 21 6 21 L 16.839844 21 L 15.238281 19 L 6 19 C 5.449 19 5 18.552 5 18 L 5 9 L 8 9 L 4 4 z"
-        ></path>
-      </svg>
-    </IconButton>
-
-  </FlexCard>
-
-  <FlexList class="list-card">
-    <TransitionGroup name="list">
-      <TableItem
-        v-for="item of todoSorted"
-        :key="item._id"
-        :_id="item._id"
-        :is-complete="item.isComplete"
-        :todo-name="item.todoName"
-        @delete-event="deleteUpdate"
-        @update-event="updateCheckmark"
-      ></TableItem
-    ></TransitionGroup>
+    <FlexList class="list-card">
+      <TransitionGroup name="list">
+        <TableItem
+          v-for="item of todoSorted"
+          :key="item._id"
+          :_id="item._id"
+          :is-complete="item.isComplete"
+          :todo-name="item.todoName"
+          @delete-event="deleteUpdate"
+          @update-event="updateCheckmark"
+        ></TableItem
+      ></TransitionGroup>
+    </FlexList>
   </FlexList>
-
-</FlexList>
 </template>
 
 <style>
@@ -260,7 +252,7 @@ onMounted(() => {
   justify-items: space-evenly;
   margin-left: 1vw;
   margin-right: 1vw;
-  margin-bottom: 0.0vw;
+  margin-bottom: 0vw;
   max-height: 6vh;
 }
 

@@ -15,8 +15,8 @@ const emit = defineEmits<{
 
 const props = defineProps<TaskInfo>();
 
-let textInput = ref(props.todoName);
-let checkBoxInput = ref(props.isComplete);
+const textInput = ref(props.todoName);
+const checkBoxInput = ref(props.isComplete);
 
 const outgoingTask = computed<TaskInfo>(() => ({
   _id: props._id,

@@ -8,7 +8,7 @@ import IconButton from "./IconButton.vue";
 
 const addInput = defineModel<string>()!;
 
-const emits = defineEmits<{ (e: "submit", invalid: boolean): void }>();
+const emit = defineEmits<{ (e: "submit", invalid: boolean): void }>();
 
 const vuelidate = useVuelidate(
   {
@@ -23,7 +23,7 @@ const vuelidate = useVuelidate(
 
 async function addRequest() {
   vuelidate.value.addInput.$touch();
-  emits("submit", vuelidate.value.addInput.$error)
+  emit("submit", vuelidate.value.addInput.$error)
   if (!vuelidate.value.$error) {
     vuelidate.value.$reset()
   }
