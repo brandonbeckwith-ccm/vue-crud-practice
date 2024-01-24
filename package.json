@@ -6,11 +6,15 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc && vite build",
+    "deploy": "git subtree push --prefix dist origin gh-pages", 
     "preview": "vite preview"
   },
   "dependencies": {
+    "@vuelidate/core": "^2.0.3",
+    "@vuelidate/validators": "^2.0.4",
     "axios": "^1.6.5",
-    "vue": "^3.3.11"
+    "vue": "^3.3.11",
+    "vue-router": "^4.2.5"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.5.2",
