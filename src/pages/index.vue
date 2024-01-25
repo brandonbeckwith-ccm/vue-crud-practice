@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import TodoItem from "../components/TodoItem.vue";
 import { computed, onMounted, ref } from "vue";
-import { ResponseData, TaskInfo, debounce } from "../util/shared";
+import { DataResponse, TaskInfo } from "../util/types";
+import { debounce } from "../util/shared";
 import {
   deletePost,
   getPosts,
@@ -15,12 +16,12 @@ import IconButton from "../components/IconButton.vue";
 
 const DEBOUNCE_TIME = 250;
 
-let oldGet: ResponseData[]; // Keep a backup to restore from
+let oldGet: DataResponse[]; // Keep a backup to restore from
 const router = useRouter();
 
 const sortingOrder = ref<SortOptions>("task_dsc");
 
-const todoData = ref<ResponseData[]>([]);
+const todoData = ref<DataResponse[]>([]);
 
 const filterInput = ref("");
 const addText = ref("");
@@ -41,11 +42,11 @@ const todoFiltered = computed(() =>
 );
 
 const todoSorted = computed(() => {
-  const taskSort = (a: ResponseData, b: ResponseData) => {
+  const taskSort = (a: DataResponse, b: DataResponse) => {
     return a.todoName.localeCompare(b.todoName); // Thanks Ethan!
   };
 
-  const completeSort = (a: ResponseData, b: ResponseData) => {
+  const completeSort = (a: DataResponse, b: DataResponse) => {
     return +b.isComplete - +a.isComplete;
   };
 
@@ -77,44 +78,46 @@ async function addRequest(invalid: boolean) {
     return;
   }
 
-  try {
-    postPost({
-      _id: "",
-      todoName: addText.value,
-      isComplete: false,
-    });
-    await debouncedUpdatePosts();
+  const task: TaskInfo = {
+    _id: "",
+    todoName: addText.value,
+    isComplete: false,
+  };
+
+  if (await postPost(task)) {
     addText.value = "";
-  } catch (error) {
-    console.dir(error);
+  } else {
+    alert("Failed to post!");
   }
+
+  await debouncedUpdatePosts();
 }
 
 async function deleteUpdate(event: TaskInfo) {
-  try {
-    await deletePost(event);
-    await debouncedUpdatePosts();
-  } catch (error) {
-    console.dir(error);
+  if (!(await deletePost(event))) {
+    alert("Failed to delete todo!");
   }
+  await debouncedUpdatePosts();
 }
 
 async function updatePosts() {
-  try {
-    const { data: response } = await getPosts();
-    oldGet = response.data;
+  const task = await getPosts();
+  if (task) {
+    oldGet = task.data;
     todoData.value = oldGet;
-  } catch (error) {
-    todoData.value = oldGet; // reset state
+  } else {
+    todoData.value = oldGet;
   }
 }
 
 const debouncedUpdatePosts = debounce(updatePosts, DEBOUNCE_TIME);
-const debouncedAddRequest = debounce(addRequest, DEBOUNCE_TIME)
+const debouncedAddRequest = debounce(addRequest, DEBOUNCE_TIME);
 
 async function updateCheckmark(event: TaskInfo) {
-  await updatePost(event);
-  await updatePosts();
+  if (!(await updatePost(event))) {
+    alert("Failed to update completion status!");
+  }
+  await debouncedUpdatePosts();
 }
 
 onMounted(() => {

@@ -13,18 +13,18 @@ async function addRequest(invalid: boolean) {
     return;
   }
 
-  try {
-    postPost({
-      _id: "",
-      todoName: addText.value,
-      isComplete: false,
-    });
+  const task = {
+    _id: "",
+    todoName: addText.value,
+    isComplete: false,
+  };
+
+  if (await postPost(task)) {
     router.push({
-      path: "/"
+      path: "/",
     });
-    addText.value = "";
-  } catch (error) {
-    console.dir(error);
+  } else {
+    alert("Failed to add post!");
   }
 }
 </script>

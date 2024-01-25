@@ -1,19 +1,4 @@
-export type TaskInfo = {
-  _id: string;
-  todoName: string;
-  isComplete: boolean;
-};
-
 export const BASE_URL = "https://calm-plum-jaguar-tutu.cyclic.app/todos";
-
-export type RequestType = "get" | "post" | "put" | "delete";
-
-export type Events = "updateEvent" | "deleteEvent" | "addEvent" | "editEvent";
-
-export type ResponseData = {
-  createdAt: string;
-  updatedAt: string;
-} & TaskInfo;
 
 export const debounce = (callback: Function, wait: number) => {
   let timeoutId: number; // Holds a timer

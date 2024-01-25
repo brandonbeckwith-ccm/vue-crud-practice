@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useRoute } from "vue-router";
-import { TaskInfo } from "../util/shared";
+import { TaskInfo } from "../util/types";
 import { computed, onMounted, ref } from "vue";
 import { router } from "../routes";
 import { deletePost, getPost, postPost } from "../util/httpRequests";
@@ -34,16 +34,16 @@ const vuelidate = useVuelidate(
 );
 
 async function getTask() {
-  try {
-    const { data: requestData } = await getPost({
-      todoName: "",
-      isComplete: false,
-      _id: postId,
-    });
-    taskInfo.value = requestData.data;
-    console.dir(requestData);
-  } catch (error) {
-    console.log(error);
+  const taskRequest: TaskInfo = {
+    todoName: "",
+    isComplete: false,
+    _id: postId,
+  };
+  const taskResponse = await getPost(taskRequest);
+  if (taskResponse) {
+    taskInfo.value = taskResponse.data;
+  } else {
+    alert("Failed to get the task to edit!");
   }
 }
 
@@ -54,19 +54,22 @@ async function updateTask() {
     return;
   }
 
-  try {
-    const postUpdate: TaskInfo = {
-      todoName: taskInfo.value.todoName,
-      isComplete: false,
-      _id: "",
-    };
-    await postPost(postUpdate);
-    await deletePost(taskInfo.value);
-    router.push({ path: "/" });
-  } catch (error) {
-    alert("Failed to save edits!");
-    console.dir(error);
+  const taskUpdate: TaskInfo = {
+    todoName: taskInfo.value.todoName,
+    isComplete: false,
+    _id: "",
+  };
+
+  if (!(await postPost(taskUpdate))) {
+    alert("Failed to post the task info!");
+    return;
   }
+
+  if (!(await deletePost(taskInfo.value))) {
+    alert("Failed to delete the old post!");
+  }
+
+  router.push({ path: "/" });
 }
 
 onMounted(() => {
@@ -84,15 +87,14 @@ onMounted(() => {
       :invalid="vuelidate.todoName.$invalid"
       :errors="vuelidate.todoName.$errors"
     />
-    <IconButton class="back-button" @click="router.push({ path: '/' })"> Back </IconButton>
-    <IconButton class="save-button" @click="updateTask" >
-      Save
+    <IconButton class="back-button" @click="router.push({ path: '/' })">
+      Back
     </IconButton>
+    <IconButton class="save-button" @click="updateTask"> Save </IconButton>
   </div>
 </template>
 
 <style>
-
 .big-card {
   min-width: 50vw;
   padding: 1em;
@@ -115,5 +117,4 @@ onMounted(() => {
 .st0 {
   fill: #eeeeee;
 }
-
 </style>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import { computed, ref } from "vue";
-import { Events, TaskInfo } from "../util/shared";
+import { Events, TaskInfo } from "../util/types";
 import { useRouter } from "vue-router";
 
 import ResponsiveTextbox from "./ResponsiveTextbox.vue";
