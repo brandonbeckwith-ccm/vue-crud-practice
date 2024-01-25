@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import FlexCard from "./FlexCard.vue"
 import { ErrorObject } from "@vuelidate/core/index.js";
 
 defineOptions({
@@ -24,10 +23,10 @@ const currentClasses = computed(() => ({
 
 <template>
   <div class="error-wrapper">
-    <FlexCard v-if="hasErrors" class="error-card ">
+    <div v-if="hasErrors" class="flex-card error-card">
       <p class="error-text">Errors:</p>
       <p class="error-text" v-for="error of props.errors">{{ error.$message }}</p>
-    </FlexCard>
+    </div>
   </div>
   <input
     :class="currentClasses"

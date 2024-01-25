@@ -45,3 +45,25 @@ h1 {
     background-color: #f9f9f9;
   }
 }
+
+.flex-card {
+  display: flex;
+  background-color: black;
+  justify-self: center;
+  justify-content: space-between;
+  align-items: center;
+  flex-flow: wrap;
+  margin: 1%;
+  padding: 1%;
+  width: auto;
+  border-radius: 20px;
+  box-shadow: 2px 2px #00000077;
+}
+
+.flex-list {
+  display: flex;
+  justify-content: space-around;
+  flex-flow: column;
+  width: auto;
+  border-radius: 25px;
+}

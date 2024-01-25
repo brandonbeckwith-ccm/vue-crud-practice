@@ -1,28 +1,27 @@
 <script setup lang="ts">
-import TableItem from "../components/TableItem.vue";
+import TodoItem from "../components/TodoItem.vue";
 import { computed, onMounted, ref } from "vue";
-import { ResponseData, TaskInfo, debounce } from "../util/shared";
+import { DataResponse, TaskInfo } from "../util/types";
+import { debounce } from "../util/shared";
 import {
   deletePost,
   getPosts,
   postPost,
   updatePost,
 } from "../util/httpRequests";
-import FlexCard from "../components/FlexCard.vue";
-import FlexList from "../components/FlexList.vue";
-import FlexText from "../components/FlexText.vue";
-import AddTodo from "../components/AddTodo.vue";
+import ResponsiveTextbox from "../components/ResponsiveTextbox.vue";
+import AddTodoBar from "../components/AddTodoBar.vue";
 import { useRouter } from "vue-router";
 import IconButton from "../components/IconButton.vue";
 
 const DEBOUNCE_TIME = 250;
 
-let oldGet: ResponseData[]; // Keep a backup to restore from
+let oldGet: DataResponse[]; // Keep a backup to restore from
 const router = useRouter();
 
 const sortingOrder = ref<SortOptions>("task_dsc");
 
-const todoData = ref<ResponseData[]>([]);
+const todoData = ref<DataResponse[]>([]);
 
 const filterInput = ref("");
 const addText = ref("");
@@ -43,11 +42,11 @@ const todoFiltered = computed(() =>
 );
 
 const todoSorted = computed(() => {
-  const taskSort = (a: ResponseData, b: ResponseData) => {
+  const taskSort = (a: DataResponse, b: DataResponse) => {
     return a.todoName.localeCompare(b.todoName); // Thanks Ethan!
   };
 
-  const completeSort = (a: ResponseData, b: ResponseData) => {
+  const completeSort = (a: DataResponse, b: DataResponse) => {
     return +b.isComplete - +a.isComplete;
   };
 
@@ -71,7 +70,7 @@ const todoSorted = computed(() => {
 async function addRequest(invalid: boolean) {
   if (addText.value === "") {
     router.push({
-      name: "add",
+      path: "add",
     });
   }
 
@@ -79,44 +78,46 @@ async function addRequest(invalid: boolean) {
     return;
   }
 
-  try {
-    postPost({
-      _id: "",
-      todoName: addText.value,
-      isComplete: false,
-    });
-    await debouncedUpdatePosts();
+  const task: TaskInfo = {
+    _id: "",
+    todoName: addText.value,
+    isComplete: false,
+  };
+
+  if (await postPost(task)) {
     addText.value = "";
-  } catch (error) {
-    console.dir(error);
+  } else {
+    alert("Failed to post!");
   }
+
+  await debouncedUpdatePosts();
 }
 
 async function deleteUpdate(event: TaskInfo) {
-  try {
-    await deletePost(event);
-    await debouncedUpdatePosts();
-  } catch (error) {
-    console.dir(error);
+  if (!(await deletePost(event))) {
+    alert("Failed to delete todo!");
   }
+  await debouncedUpdatePosts();
 }
 
 async function updatePosts() {
-  try {
-    const { data: response } = await getPosts();
-    oldGet = response.data;
+  const task = await getPosts();
+  if (task) {
+    oldGet = task.data;
     todoData.value = oldGet;
-  } catch (error) {
-    todoData.value = oldGet; // reset state
+  } else {
+    todoData.value = oldGet;
   }
 }
 
 const debouncedUpdatePosts = debounce(updatePosts, DEBOUNCE_TIME);
-const debouncedAddRequest = debounce(addRequest, DEBOUNCE_TIME)
+const debouncedAddRequest = debounce(addRequest, DEBOUNCE_TIME);
 
 async function updateCheckmark(event: TaskInfo) {
-  await updatePost(event);
-  await updatePosts();
+  if (!(await updatePost(event))) {
+    alert("Failed to update completion status!");
+  }
+  await debouncedUpdatePosts();
 }
 
 onMounted(() => {
@@ -125,11 +126,11 @@ onMounted(() => {
 </script>
 
 <template>
-  <FlexList class="container-card">
-    <AddTodo v-model="addText" @submit="debouncedAddRequest"></AddTodo>
+  <div class="flex-card container-card">
+    <AddTodoBar v-model="addText" @submit="debouncedAddRequest"></AddTodoBar>
 
-    <FlexCard class="control-card">
-      <FlexText
+    <div class="flex-card control-card">
+      <ResponsiveTextbox
         placeholder="Search"
         class="less-aggressive-textbox"
         v-model="filterInput"
@@ -156,11 +157,11 @@ onMounted(() => {
           ></path>
         </svg>
       </IconButton>
-    </FlexCard>
+    </div>
 
-    <FlexList class="list-card">
+    <div class="flex-list list-card">
       <TransitionGroup name="list">
-        <TableItem
+        <TodoItem
           v-for="item of todoSorted"
           :key="item._id"
           :_id="item._id"
@@ -168,10 +169,10 @@ onMounted(() => {
           :todo-name="item.todoName"
           @delete-event="deleteUpdate"
           @update-event="updateCheckmark"
-        ></TableItem
+        ></TodoItem
       ></TransitionGroup>
-    </FlexList>
-  </FlexList>
+    </div>
+  </div>
 </template>
 
 <style>
@@ -276,6 +277,7 @@ onMounted(() => {
 
 .container-card {
   align-items: center;
+  max-width: 47vw;
   background-color: #111;
 }
 

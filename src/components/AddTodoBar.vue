@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import useVuelidate from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
-import { noSymbols, containsVue } from "../util/Validators";
-import FlexText from "../components/FlexText.vue";
-import FlexCard from "../components/FlexCard.vue";
+import { noSymbols, containsVue } from "../util/validators";
+import ResponsiveTextbox from "./ResponsiveTextbox.vue";
 import IconButton from "./IconButton.vue";
 
 const addInput = defineModel<string>()!;
@@ -32,9 +31,9 @@ async function addRequest() {
 </script>
 
 <template>
-  <FlexCard class="add-card">
+  <div class="flex-card add-card">
 
-    <FlexText
+    <ResponsiveTextbox
       @keypress.enter="addRequest"
       placeholder="Todo..."
       v-model="addInput"
@@ -71,7 +70,7 @@ async function addRequest() {
 
     </IconButton>
 
-  </FlexCard>
+  </div>
 </template>
 
 <style>
