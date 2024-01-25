@@ -5,7 +5,7 @@ import { noSymbols, containsVue } from "../util/validators";
 import ResponsiveTextbox from "./ResponsiveTextbox.vue";
 import IconButton from "./IconButton.vue";
 
-const addInput = defineModel<string>()!;
+const addInput = defineModel<string>('');
 
 const emit = defineEmits<{ (e: "submit", invalid: boolean): void }>();
 
