@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import TableItem from "../components/TableItem.vue";
+import TodoItem from "../components/TodoItem.vue";
 import { computed, onMounted, ref } from "vue";
 import { ResponseData, TaskInfo, debounce } from "../util/shared";
 import {
@@ -8,10 +8,8 @@ import {
   postPost,
   updatePost,
 } from "../util/httpRequests";
-import FlexCard from "../components/FlexCard.vue";
-import FlexList from "../components/FlexList.vue";
-import FlexText from "../components/FlexText.vue";
-import AddTodo from "../components/AddTodo.vue";
+import ResponsiveTextbox from "../components/ResponsiveTextbox.vue";
+import AddTodoBar from "../components/AddTodoBar.vue";
 import { useRouter } from "vue-router";
 import IconButton from "../components/IconButton.vue";
 
@@ -71,7 +69,7 @@ const todoSorted = computed(() => {
 async function addRequest(invalid: boolean) {
   if (addText.value === "") {
     router.push({
-      name: "add",
+      path: "add",
     });
   }
 
@@ -125,11 +123,11 @@ onMounted(() => {
 </script>
 
 <template>
-  <FlexList class="container-card">
-    <AddTodo v-model="addText" @submit="debouncedAddRequest"></AddTodo>
+  <div class="flex-card container-card">
+    <AddTodoBar v-model="addText" @submit="debouncedAddRequest"></AddTodoBar>
 
-    <FlexCard class="control-card">
-      <FlexText
+    <div class="flex-card control-card">
+      <ResponsiveTextbox
         placeholder="Search"
         class="less-aggressive-textbox"
         v-model="filterInput"
@@ -156,11 +154,11 @@ onMounted(() => {
           ></path>
         </svg>
       </IconButton>
-    </FlexCard>
+    </div>
 
-    <FlexList class="list-card">
+    <div class="flex-list list-card">
       <TransitionGroup name="list">
-        <TableItem
+        <TodoItem
           v-for="item of todoSorted"
           :key="item._id"
           :_id="item._id"
@@ -168,10 +166,10 @@ onMounted(() => {
           :todo-name="item.todoName"
           @delete-event="deleteUpdate"
           @update-event="updateCheckmark"
-        ></TableItem
+        ></TodoItem
       ></TransitionGroup>
-    </FlexList>
-  </FlexList>
+    </div>
+  </div>
 </template>
 
 <style>
@@ -276,6 +274,7 @@ onMounted(() => {
 
 .container-card {
   align-items: center;
+  max-width: 47vw;
   background-color: #111;
 }
 

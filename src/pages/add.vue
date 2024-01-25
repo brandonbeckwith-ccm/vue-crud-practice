@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import AddTodo from "../components/AddTodo.vue";
+import AddTodo from "../components/AddTodoBar.vue";
 import { postPost } from "../util/httpRequests";
 import { useRouter } from "vue-router";
 
@@ -20,7 +20,7 @@ async function addRequest(invalid: boolean) {
       isComplete: false,
     });
     router.push({
-      name: "home",
+      path: "/"
     });
     addText.value = "";
   } catch (error) {
@@ -32,4 +32,3 @@ async function addRequest(invalid: boolean) {
 <template>
   <AddTodo v-model="addText" @submit="addRequest"> </AddTodo>
 </template>
-../util/httpRequests

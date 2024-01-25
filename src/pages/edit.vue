@@ -4,12 +4,11 @@ import { TaskInfo } from "../util/shared";
 import { computed, onMounted, ref } from "vue";
 import { router } from "../routes";
 import { deletePost, getPost, postPost } from "../util/httpRequests";
-import FlexText from "../components/FlexText.vue";
+import ResponsiveTextbox from "../components/ResponsiveTextbox.vue";
 import useVuelidate from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
-import { noSymbols, containsVue } from "../util/Validators";
+import { noSymbols, containsVue } from "../util/validators";
 
-import FlexCard from "../components/FlexCard.vue";
 import IconButton from "../components/IconButton.vue";
 
 const route = useRoute();
@@ -63,7 +62,7 @@ async function updateTask() {
     };
     await postPost(postUpdate);
     await deletePost(taskInfo.value);
-    router.push({ name: "home" });
+    router.push({ path: "/" });
   } catch (error) {
     alert("Failed to save edits!");
     console.dir(error);
@@ -76,8 +75,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <FlexCard class="big-card">
-    <FlexText
+  <div class="flex-card big-card">
+    <ResponsiveTextbox
       @keypress.enter="updateTask"
       placeholder="Todo..."
       v-model="taskInfo.todoName"
@@ -85,11 +84,11 @@ onMounted(() => {
       :invalid="vuelidate.todoName.$invalid"
       :errors="vuelidate.todoName.$errors"
     />
-    <IconButton class="back-button" @click="router.push({ name: 'home' })"> Back </IconButton>
+    <IconButton class="back-button" @click="router.push({ path: '/' })"> Back </IconButton>
     <IconButton class="save-button" @click="updateTask" >
       Save
     </IconButton>
-  </FlexCard>
+  </div>
 </template>
 
 <style>
@@ -118,4 +117,3 @@ onMounted(() => {
 }
 
 </style>
-../util/httpRequests

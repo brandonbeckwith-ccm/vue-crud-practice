@@ -4,7 +4,7 @@ import { computed, ref } from "vue";
 import { Events, TaskInfo } from "../util/shared";
 import { useRouter } from "vue-router";
 
-import FlexText from "./FlexText.vue";
+import ResponsiveTextbox from "./ResponsiveTextbox.vue";
 import IconButton from "./IconButton.vue";
 
 const router = useRouter();
@@ -29,7 +29,7 @@ const outgoingTask = computed<TaskInfo>(() => ({
 <template>
   <FlexCard class="flex-row">
 
-    <FlexText
+    <ResponsiveTextbox
       disabled="true"
       class="text-box"
       type="text"
@@ -47,7 +47,7 @@ const outgoingTask = computed<TaskInfo>(() => ({
       class="base-button edit-button"
       @click="
         router.push({
-          name: 'edit',
+          path: 'edit',
           query: {
             id: props._id,
           },
@@ -96,6 +96,7 @@ const outgoingTask = computed<TaskInfo>(() => ({
   padding: 5px;
   max-height: 18vh;
 }
+
 
 .flex-row:first-child {
   margin-top: 2vh;
