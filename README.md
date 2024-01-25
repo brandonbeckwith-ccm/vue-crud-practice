@@ -1,7 +1,7 @@
 
 # Todo Application
 
-[![pages-build-deployment](https://github.com/brandonbeckwith-ccm/vue-crud-practice/actions/workflows/pages/pages-build-deployment/badge.svg?branch=gh-pages)](https://github.com/brandonbeckwith-ccm/vue-crud-practice/actions/workflows/pages/pages-build-deployment)
+[![pages-build-deployment](https://github.com/brandonbeckwith-ccm/vue-crud-practice/actions/workflows/pages/pages-build-deployment/badge.svg?branch=gh-pages)](https://github.com/brandonbeckwith-ccm/vue-crud-practice/actions/workflows/pages/pages-build-deployment) [![Test](https://github.com/brandonbeckwith-ccm/vue-crud-practice/actions/workflows/pull_test.yml/badge.svg)](https://github.com/brandonbeckwith-ccm/vue-crud-practice/actions/workflows/pull_test.yml)
 
 You can visit a deployed [GitHub Pages](https://brandonbeckwith-ccm.github.io/vue-crud-practice/) version.
 
