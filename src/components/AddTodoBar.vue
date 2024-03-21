@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import useVuelidate from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
-import { noSymbols, containsVue } from "../util/validators";
+import { noSymbols, containsVue } from "../util/Validators";
 import ResponsiveTextbox from "./ResponsiveTextbox.vue";
 import IconButton from "./IconButton.vue";
 

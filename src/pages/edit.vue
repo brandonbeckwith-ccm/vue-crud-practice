@@ -7,7 +7,7 @@ import { deletePost, getPost, postPost } from "../util/httpRequests";
 import ResponsiveTextbox from "../components/ResponsiveTextbox.vue";
 import useVuelidate from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
-import { noSymbols, containsVue } from "../util/validators";
+import { noSymbols, containsVue } from "../util/Validators";
 
 import IconButton from "../components/IconButton.vue";
 
