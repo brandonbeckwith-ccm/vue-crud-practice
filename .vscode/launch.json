@@ -1,0 +1,19 @@
+{
+  "configurations": [
+    {
+      "name": "Launch localhost",
+      "type": "firefox",
+      "request": "launch",
+      "reAttach": true,
+      "url": "http://localhost:4000",
+      "profile": "dev",
+      "keepProfileChanges": true,
+      "webRoot": "${workspaceFolder}"
+    },
+    {
+      "name": "Attach",
+      "type": "firefox",
+      "request": "attach"
+    }
+  ]
+}

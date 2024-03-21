@@ -3,9 +3,7 @@ import { helpers } from "@vuelidate/validators";
 export const noSymbols = helpers.withMessage(
   "Can't contain symbols.",
   (val: string) => {
-    console.log(val);
     const res = /^[^\^~`!@#\$%^*_+\[\]{}\\:;?|><=]+$/.test(val);
-    console.log(res);
     return res;
   }
 );
